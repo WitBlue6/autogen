@@ -12,19 +12,12 @@ from autogenstudio.gallery.tools.generate_image import generate_image
 
 
 def test_default_gallery_uses_supported_models(tmp_path: Path) -> None:
-    gallery_path = (
-        Path(__file__).resolve().parents[1]
-        / "frontend/src/components/views/gallery/default_gallery.json"
-    )
+    gallery_path = Path(__file__).resolve().parents[1] / "frontend/src/components/views/gallery/default_gallery.json"
     gallery = json.loads(gallery_path.read_text())
     models = gallery["components"]["models"]
     assert any(model["config"].get("model") == "claude-sonnet-4-6" for model in models)
 
-    image_tool = next(
-        tool
-        for tool in gallery["components"]["tools"]
-        if tool["config"].get("name") == "generate_image"
-    )
+    image_tool = next(tool for tool in gallery["components"]["tools"] if tool["config"].get("name") == "generate_image")
     assert 'model="gpt-image-2"' in image_tool["config"]["source_code"]
 
     image = Image.new("RGB", (1, 1), "red")
